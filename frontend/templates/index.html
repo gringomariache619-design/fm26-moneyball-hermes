@@ -1,0 +1,690 @@
+<!DOCTYPE html>
+<html lang="pt-PT">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🎯 Moneyball FM26 - Performance Analysis</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #2E75B6;
+            --secondary: #1F4E78;
+            --success: #70AD47;
+            --warning: #FFC000;
+            --danger: #FF6B6B;
+            --dark: #1a1a1a;
+            --light: #f5f5f5;
+            --border: #e0e0e0;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, var(--dark) 0%, #2a2a2a 100%);
+            color: #fff;
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        /* Header */
+        .header {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            padding: 2rem;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+            border-bottom: 3px solid var(--success);
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .header p {
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+
+        /* Container */
+        .container {
+            max-width: 1400px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+
+        /* Tabs */
+        .tabs {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            border-bottom: 2px solid var(--border);
+            overflow-x: auto;
+        }
+
+        .tab-button {
+            padding: 1rem 1.5rem;
+            background: transparent;
+            border: none;
+            color: #fff;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 600;
+            border-bottom: 3px solid transparent;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .tab-button:hover {
+            color: var(--primary);
+            border-bottom-color: var(--primary);
+        }
+
+        .tab-button.active {
+            color: var(--success);
+            border-bottom-color: var(--success);
+        }
+
+        .tab-content {
+            display: none;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Cards */
+        .card {
+            background: linear-gradient(135deg, #2a2a2a 0%, #1f1f1f 100%);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+        }
+
+        .card:hover {
+            box-shadow: 0 8px 12px rgba(46, 117, 182, 0.2);
+            border-color: var(--primary);
+        }
+
+        .card h3 {
+            color: var(--primary);
+            margin-bottom: 1rem;
+            font-size: 1.3rem;
+        }
+
+        /* Grid */
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .grid-2 {
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+        }
+
+        /* Forms */
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: var(--light);
+        }
+
+        input, select, textarea {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            background: #1a1a1a;
+            color: #fff;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(46, 117, 182, 0.1);
+        }
+
+        /* Buttons */
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 4px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            color: #fff;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(46, 117, 182, 0.3);
+        }
+
+        .btn-secondary {
+            background: var(--success);
+            color: #fff;
+        }
+
+        .btn-secondary:hover {
+            background: #5a8a3d;
+        }
+
+        .btn-small {
+            padding: 0.5rem 1rem;
+            font-size: 0.9rem;
+        }
+
+        /* Tables */
+        .table-responsive {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1rem 0;
+        }
+
+        th {
+            background: linear-gradient(135deg, var(--secondary) 0%, var(--primary) 100%);
+            padding: 1rem;
+            text-align: left;
+            font-weight: 600;
+            border: 1px solid var(--border);
+        }
+
+        td {
+            padding: 0.75rem 1rem;
+            border: 1px solid var(--border);
+        }
+
+        tr:hover {
+            background: rgba(46, 117, 182, 0.1);
+        }
+
+        /* Stats */
+        .stat-card {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            padding: 1.5rem;
+            border-radius: 8px;
+            text-align: center;
+            color: #fff;
+        }
+
+        .stat-value {
+            font-size: 2.5rem;
+            font-weight: bold;
+            margin: 0.5rem 0;
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            opacity: 0.8;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        /* Alerts */
+        .alert {
+            padding: 1rem;
+            border-radius: 4px;
+            margin-bottom: 1rem;
+            border-left: 4px solid;
+        }
+
+        .alert-success {
+            background: rgba(112, 173, 71, 0.1);
+            border-left-color: var(--success);
+            color: var(--success);
+        }
+
+        .alert-warning {
+            background: rgba(255, 192, 0, 0.1);
+            border-left-color: var(--warning);
+            color: var(--warning);
+        }
+
+        .alert-danger {
+            background: rgba(255, 107, 107, 0.1);
+            border-left-color: var(--danger);
+            color: var(--danger);
+        }
+
+        /* File Upload */
+        .upload-area {
+            border: 2px dashed var(--primary);
+            border-radius: 8px;
+            padding: 2rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: rgba(46, 117, 182, 0.05);
+        }
+
+        .upload-area:hover {
+            background: rgba(46, 117, 182, 0.1);
+            border-color: var(--success);
+        }
+
+        .upload-area.dragover {
+            background: rgba(46, 117, 182, 0.2);
+            border-color: var(--success);
+        }
+
+        /* Loading */
+        .spinner {
+            border: 3px solid var(--border);
+            border-top: 3px solid var(--primary);
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 1rem auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Footer */
+        .footer {
+            text-align: center;
+            padding: 2rem;
+            color: #666;
+            margin-top: 3rem;
+            border-top: 1px solid var(--border);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 1.8rem;
+            }
+
+            .grid-2 {
+                grid-template-columns: 1fr;
+            }
+
+            .tabs {
+                flex-wrap: wrap;
+            }
+
+            .tab-button {
+                padding: 0.75rem 1rem;
+                font-size: 0.9rem;
+            }
+        }
+
+        /* Badge */
+        .badge {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        .badge-success {
+            background: rgba(112, 173, 71, 0.2);
+            color: var(--success);
+        }
+
+        .badge-warning {
+            background: rgba(255, 192, 0, 0.2);
+            color: var(--warning);
+        }
+
+        .badge-danger {
+            background: rgba(255, 107, 107, 0.2);
+            color: var(--danger);
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <div class="header">
+        <h1>🎯 Moneyball FM26</h1>
+        <p>Análise de Performance com Metodologia Mustermann FM | Mac & PC Compatible</p>
+    </div>
+
+    <div class="container">
+        <!-- Tabs -->
+        <div class="tabs">
+            <button class="tab-button active" onclick="switchTab('upload')">📤 UPLOAD</button>
+            <button class="tab-button" onclick="switchTab('analysis')">📊 ANÁLISE</button>
+            <button class="tab-button" onclick="switchTab('scout')">🎯 SCOUT</button>
+            <button class="tab-button" onclick="switchTab('compare')">⚔️ COMPARAR</button>
+            <button class="tab-button" onclick="switchTab('export')">📥 EXPORTAR</button>
+        </div>
+
+        <!-- Upload Tab -->
+        <div id="upload" class="tab-content active">
+            <div class="card">
+                <h3>📤 Upload de Dados</h3>
+                <p style="margin-bottom: 1rem;">Suporta: CSV • Screenshots (PNG/JPG) • HTML</p>
+                
+                <div class="upload-area" id="uploadArea">
+                    <p style="font-size: 2rem; margin-bottom: 0.5rem;">📁</p>
+                    <p><strong>Arraste ficheiros aqui</strong> ou clique para selecionar</p>
+                    <p style="font-size: 0.9rem; opacity: 0.7; margin-top: 0.5rem;">CSV, PNG, JPG ou HTML</p>
+                    <input type="file" id="fileInput" style="display: none;" accept=".csv,.png,.jpg,.jpeg,.html" multiple>
+                </div>
+
+                <div class="form-group" style="margin-top: 1.5rem;">
+                    <label for="squadType">Tipo de Equipa:</label>
+                    <select id="squadType">
+                        <option value="principal">Equipa Principal</option>
+                        <option value="sub23">Sub-23</option>
+                        <option value="sub19">Sub-19</option>
+                        <option value="youth">Youth Academy</option>
+                    </select>
+                </div>
+
+                <button class="btn btn-primary" onclick="uploadFile()">PROCESSAR UPLOAD</button>
+            </div>
+
+            <div id="uploadStatus" class="card" style="display:none;">
+                <h3>Status do Upload</h3>
+                <div class="spinner"></div>
+                <p>A processar ficheiro...</p>
+            </div>
+        </div>
+
+        <!-- Analysis Tab -->
+        <div id="analysis" class="tab-content">
+            <div class="grid">
+                <div class="stat-card">
+                    <div class="stat-label">Jogadores Ativos</div>
+                    <div class="stat-value" id="activePlayers">0</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Avaliação Média</div>
+                    <div class="stat-value" id="avgRating">0.0</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Goals/90 Médio</div>
+                    <div class="stat-value" id="avgGoals">0.00</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Pass % Médio</div>
+                    <div class="stat-value" id="avgPass">0%</div>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3>Top Performers</h3>
+                <div id="topPerformers">
+                    <p style="opacity: 0.7;">Nenhum dado ainda. Faça upload de um ficheiro primeiro.</p>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3>Underperformers & Problemas</h3>
+                <div id="underperformers">
+                    <p style="opacity: 0.7;">Nenhum dado ainda. Faça upload de um ficheiro primeiro.</p>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3>Análise por Posição</h3>
+                <div id="positionAnalysis">
+                    <p style="opacity: 0.7;">Nenhum dado ainda. Faça upload de um ficheiro primeiro.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Scout Tab -->
+        <div id="scout" class="tab-content">
+            <div class="card">
+                <h3>🎯 Pesquisa de Scouts</h3>
+                
+                <div class="grid-2">
+                    <div class="form-group">
+                        <label for="position">Posição:</label>
+                        <select id="position">
+                            <option value="">Todas</option>
+                            <option value="ST">ST - Avançado</option>
+                            <option value="W">W - Extremo</option>
+                            <option value="AM">AM - Médio Ofensivo</option>
+                            <option value="CM">CM - Médio Centro</option>
+                            <option value="DM">DM - Médio Defensivo</option>
+                            <option value="CB">CB - Central</option>
+                            <option value="FB">FB - Lateral</option>
+                            <option value="GK">GK - Guarda-Redes</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="league">Campeonato:</label>
+                        <select id="league">
+                            <option value="">Todos</option>
+                            <option value="ligue2">Ligue 2 (França)</option>
+                            <option value="laliga2">LaLiga 2 (Espanha)</option>
+                            <option value="liga3pt">Campeonato Portugal (Liga 3)</option>
+                            <option value="serie_b">Série B (Brasil)</option>
+                            <option value="liga1_ro">Liga 1 (Roménia)</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="minGoals">Goals/90 Mínimo:</label>
+                        <input type="number" id="minGoals" placeholder="0.30" step="0.05" min="0" value="0.30">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="maxPrice">Preço Máximo (€M):</label>
+                        <input type="number" id="maxPrice" placeholder="10" step="1" min="0" value="10">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="teamLevel">Nível da Equipa:</label>
+                        <select id="teamLevel">
+                            <option value="all">Qualquer Uma</option>
+                            <option value="title">Candidatos ao Título</option>
+                            <option value="mid">Meio da Tabela</option>
+                            <option value="relegation">Candidatos a Descer</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="age">Idade (Max):</label>
+                        <input type="number" id="age" placeholder="32" step="1" min="16" max="45" value="32">
+                    </div>
+                </div>
+
+                <button class="btn btn-secondary" onclick="searchScouts()">PESQUISAR SCOUTS</button>
+            </div>
+
+            <div id="scoutResults" class="card" style="display:none;">
+                <h3>Resultados</h3>
+                <div class="table-responsive" id="scoutTable">
+                    <!-- Results will be populated here -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Compare Tab -->
+        <div id="compare" class="tab-content">
+            <div class="card">
+                <h3>⚔️ Comparar Equipas</h3>
+                <p style="margin-bottom: 1rem;">Carregue múltiplos ficheiros e compare os dados lado a lado</p>
+                
+                <div class="alert alert-warning">
+                    ℹ️ Funcionalidade disponível em breve
+                </div>
+            </div>
+        </div>
+
+        <!-- Export Tab -->
+        <div id="export" class="tab-content">
+            <div class="card">
+                <h3>📥 Exportar Análise</h3>
+                
+                <div class="form-group">
+                    <label>Formato de Exportação:</label>
+                    <div style="display: grid; gap: 1rem; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));">
+                        <button class="btn btn-primary" onclick="exportData('csv')">📊 CSV</button>
+                        <button class="btn btn-primary" onclick="exportData('json')">📄 JSON</button>
+                        <button class="btn btn-primary" onclick="exportData('pdf')" style="opacity: 0.5; cursor: not-allowed;">🔒 PDF (Em breve)</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3>Histórico de Exports</h3>
+                <p style="opacity: 0.7;">Nenhum export ainda.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <div class="footer">
+        <p>🎯 Moneyball FM26 v1.0 | Powered by Mustermann FM Methodology | Mac & PC Compatible</p>
+        <p style="font-size: 0.85rem; margin-top: 1rem;">Hermes + Railway | Design moderno com suporte a Screenshots, CSV e HTML</p>
+    </div>
+
+    <!-- Scripts -->
+    <script>
+        // Tab switching
+        function switchTab(tabName) {
+            // Hide all tabs
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            document.querySelectorAll('.tab-button').forEach(btn => {
+                btn.classList.remove('active');
+            });
+
+            // Show selected tab
+            document.getElementById(tabName).classList.add('active');
+            event.target.classList.add('active');
+        }
+
+        // File upload handling
+        const uploadArea = document.getElementById('uploadArea');
+        const fileInput = document.getElementById('fileInput');
+
+        uploadArea.addEventListener('click', () => fileInput.click());
+
+        uploadArea.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            uploadArea.classList.add('dragover');
+        });
+
+        uploadArea.addEventListener('dragleave', () => {
+            uploadArea.classList.remove('dragover');
+        });
+
+        uploadArea.addEventListener('drop', (e) => {
+            e.preventDefault();
+            uploadArea.classList.remove('dragover');
+            fileInput.files = e.dataTransfer.files;
+        });
+
+        // Upload function
+        function uploadFile() {
+            if (fileInput.files.length === 0) {
+                alert('Selecione um ficheiro!');
+                return;
+            }
+
+            const formData = new FormData();
+            for (let i = 0; i < fileInput.files.length; i++) {
+                formData.append('file', fileInput.files[i]);
+            }
+            formData.append('squad_type', document.getElementById('squadType').value);
+
+            document.getElementById('uploadStatus').style.display = 'block';
+
+            fetch('/api/upload', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('uploadStatus').style.display = 'none';
+                alert('Ficheiro processado com sucesso!');
+                // Switch to analysis tab
+                switchTab('analysis');
+            })
+            .catch(error => {
+                document.getElementById('uploadStatus').style.display = 'none';
+                alert('Erro ao processar ficheiro: ' + error);
+            });
+        }
+
+        // Scout search
+        function searchScouts() {
+            const criteria = {
+                position: document.getElementById('position').value,
+                league: document.getElementById('league').value,
+                min_goals_per_90: document.getElementById('minGoals').value,
+                max_price: document.getElementById('maxPrice').value,
+                team_level: document.getElementById('teamLevel').value,
+                age_max: document.getElementById('age').value
+            };
+
+            fetch('/api/scout-search', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(criteria)
+            })
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('scoutResults').style.display = 'block';
+                // Populate results
+                console.log(data);
+            })
+            .catch(error => alert('Erro: ' + error));
+        }
+
+        // Export function
+        function exportData(format) {
+            if (format === 'pdf') {
+                alert('Funcionalidade PDF disponível em breve!');
+                return;
+            }
+            alert(`Exportar como ${format.toUpperCase()} - Funcionalidade em desenvolvimento`);
+        }
+
+        // Check API health on load
+        window.addEventListener('load', () => {
+            fetch('/api/health')
+                .then(r => r.json())
+                .then(data => console.log('✅ API Status:', data.status))
+                .catch(e => console.warn('⚠️ API offline:', e));
+        });
+    </script>
+</body>
+</html>
